@@ -1,5 +1,6 @@
 import struct
 
+import os
 import numpy as np
 import sklearn.datasets
 import sklearn.model_selection
@@ -36,9 +37,9 @@ def read_choirdat(dataset_path):
     return (samples, labels), features, classes
 
 
-def load_isolet():
-    trainset_path = './data/isolet_train.choir_dat'
-    testset_path = './data/isolet_test.choir_dat'
+def load_isolet(data_dir='./data'):
+    trainset_path = os.path.join(data_dir, 'isolet_train.choir_dat')
+    testset_path = os.path.join(data_dir, 'isolet_test.choir_dat')
 
     # Load trainset
     train_samples, features, classes = read_choirdat(trainset_path)
