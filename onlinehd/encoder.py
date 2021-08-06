@@ -112,19 +112,10 @@ class LinearEncoder(object):
         # we need batches to remove memory usage
         temp = torch.empty(bsize, self.features, self.dim)
         for i in tqdm(range(0, n, bsize), leave=False):
-            try:
-                l = ((x[i:i + bsize].cpu().detach().numpy() + 1) / 2 * (self.m - 1)).astype(int)
-                temp = self.levels[l] * self.basis.T
-                temp = temp.view(-1, self.features, self.dim)
-                h[i:i + bsize] = torch.sum(temp, dim=1)
-            except Exception as e:
-                print(i, '/', n)
-                print('l', l.shape)
-                print('self.levels', self.levels.shape)
-                print('self.basis.T', self.basis.T.shape)
-                print(temp.shape)
-                print(self.levels[l] * self.basis.T)
-                raise e
+            l = ((x[i:i + bsize].cpu().detach().numpy() + 1) / 2 * (self.m - 1)).astype(int)
+            temp = self.levels[l] * self.basis.T
+            temp = temp.view(-1, self.features, self.dim)
+            h[i:i + bsize] = torch.sum(temp, dim=1)
 
         return h
 
@@ -132,16 +123,3 @@ class LinearEncoder(object):
         self.basis = self.basis.to(*args)
         self.levels = self.levels.to(*args)
         return self
-
-
-if __name__ == '__main__':
-    from dataloader import load_isolet
-
-    e = LinearEncoder(617)
-    x, x_test, _, _ = load_isolet(data_dir='../data', normalize=False)
-    if torch.cuda.is_available():
-        x= x.cuda()
-        x_test = x_test.cuda()
-        e.to(x.device)
-    # print(e(x).size())
-    print(e(x_test).size())
