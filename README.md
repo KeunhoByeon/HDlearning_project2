@@ -28,8 +28,8 @@ flip = int(self.dim / m) * i
 #### Test 01 - OnlineHD with non-linear encoder, Normalize (epoch 20)
 ```
 Loading...
-Trainset    size: [6238, 617]    data range: -0.076225 ~ 0.076225
-Testset     size: [1559, 617]    data range: -0.073082 ~ 0.073082
+Trainset    size: (6238, 617)    data range: -0.076225 ~ 0.076225
+Testset     size: (6238, 617)    data range: -0.073082 ~ 0.073082
 Training...
 Validating...
 acc = 0.980282
@@ -40,8 +40,8 @@ t = 0.790847
 #### Test 02 - OnlineHD with non-linear encoder, Normalize (epoch 40)
 ```
 Loading...
-Trainset    size: [6238, 617]    data range: -0.076225 ~ 0.076225
-Testset     size: [1559, 617]    data range: -0.073082 ~ 0.073082
+Trainset    size: (6238, 617)    data range: -0.076225 ~ 0.076225
+Testset     size: (6238, 617)    data range: -0.073082 ~ 0.073082
 Training...
 Validating...
 acc = 0.994550
