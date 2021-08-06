@@ -15,5 +15,5 @@ _fasthd = load(
 
 from . import fasthd
 from . import spatial
-from .encoder import Encoder
+from .encoder import Encoder, LinearEncoder
 from .onlinehd import OnlineHD

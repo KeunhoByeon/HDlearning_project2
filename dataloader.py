@@ -37,7 +37,7 @@ def read_choirdat(dataset_path):
     return (samples, labels), features, classes
 
 
-def load_isolet(data_dir='./data'):
+def load_isolet(data_dir='./data', normalize=True, to_tensor=True):
     trainset_path = os.path.join(data_dir, 'isolet_train.choir_dat')
     testset_path = os.path.join(data_dir, 'isolet_test.choir_dat')
 
@@ -55,20 +55,23 @@ def load_isolet(data_dir='./data'):
     y_test = np.array(y_test).astype(np.float64)
 
     # Normalize
-    scaler = sklearn.preprocessing.Normalizer().fit(x)
-    x = scaler.transform(x)
-    x_test = scaler.transform(x_test)
-
-    # Changes data to pytorch's tensors
-    x = torch.from_numpy(x).float()
-    y = torch.from_numpy(y).long()
-    x_test = torch.from_numpy(x_test).float()
-    y_test = torch.from_numpy(y_test).long()
+    if normalize:
+        scaler = sklearn.preprocessing.Normalizer().fit(x)
+        x = scaler.transform(x)
+        x_test = scaler.transform(x_test)
 
     # Print dataset info
     print('Trainset    size: {}    data range: {:4f} ~ {:4f}'
-          .format(list(x.size()), x.min().item(), x.max().item()))
+          .format(x.shape, x.min(), x.max()))
     print('Testset     size: {}    data range: {:4f} ~ {:4f}'
-          .format(list(x_test.size()), x_test.min().item(), x_test.max().item()))
+          .format(x_test.shape, x_test.min(), x_test.max()))
+
+    # Changes data to pytorch's tensors
+    if to_tensor:
+        x = torch.from_numpy(x).float()
+        y = torch.from_numpy(y).long()
+        x_test = torch.from_numpy(x_test).float()
+        y_test = torch.from_numpy(y_test).long()
 
     return x, x_test, y, y_test
+

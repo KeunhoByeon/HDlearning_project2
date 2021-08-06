@@ -5,6 +5,7 @@ import torch
 
 from . import spatial
 from . import Encoder
+from . import LinearEncoder
 
 from . import _fasthd
 
@@ -44,10 +45,10 @@ class OnlineHD(object):
         >>> ypred.size()
         torch.Size([1000])
     '''
-    def __init__(self, classes : int, features : int, dim : int = 4000):
+    def __init__(self, classes : int, features : int, dim : int = 4000, linear_encoder=False):
         self.classes = classes
         self.dim = dim
-        self.encoder = Encoder(features, dim)
+        self.encoder = LinearEncoder(features, dim) if linear_encoder else Encoder(features, dim)
         self.model = torch.zeros(self.classes, self.dim)
 
     def __call__(self, x : torch.Tensor, encoded : bool = False):

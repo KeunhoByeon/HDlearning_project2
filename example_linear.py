@@ -8,16 +8,16 @@ import torch.backends.cudnn as cudnn
 
 import onlinehd
 from dataloader import load_isolet
-from utils import save_model
+from utils import save_model_linear
 
 
 # simple OnlineHD training
 def main(args):
     print('Loading...')
-    x, x_test, y, y_test = load_isolet(args.data)
+    x, x_test, y, y_test = load_isolet(args.data, normalize=False)
     classes = y.unique().size(0)
     features = x.size(1)
-    model = onlinehd.OnlineHD(classes, features)
+    model = onlinehd.OnlineHD(classes, features, linear_encoder=True)
 
     if torch.cuda.is_available():
         x = x.cuda()
@@ -27,14 +27,18 @@ def main(args):
         model = model.to('cuda')
         print('Using GPU!')
 
+    print('Encoding...')
+    h = model.encode(x)
+    h_test = model.encode(x_test)
+
     print('Training...')
     t = time()
-    model = model.fit(x, y, bootstrap=args.bootstrap, lr=args.lr, epochs=args.epochs, one_pass_fit=args.one_pass_fit)
+    model = model.fit(h, y, encoded=True, bootstrap=args.bootstrap, lr=args.lr, epochs=args.epochs, one_pass_fit=args.one_pass_fit)
     t = time() - t
 
     print('Validating...')
-    yhat = model(x)
-    yhat_test = model(x_test)
+    yhat = model(h, encoded=True)
+    yhat_test = model(h_test, encoded=True)
     acc = (y == yhat).float().mean()
     acc_test = (y_test == yhat_test).float().mean()
     print(f'{acc = :6f}')
@@ -42,7 +46,7 @@ def main(args):
     print(f'{t = :6f}')
 
     # Save result
-    save_model(model, os.path.join(args.results, 'model.pth'))
+    save_model_linear(model, os.path.join(args.results, 'model.pth'))
     with open(os.path.join(args.results, 'results.txt'), 'a') as wf:
         wf.write('acc = {}\nacc_test = {}\nt = {}'.format(acc, acc_test, t))
 
