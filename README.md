@@ -17,11 +17,11 @@ Added Linear Encoder at ./onlinehd/encoder.py line 89
 
 I changed the way to set 'flipped D/(M−1) bits' to make Lm hypervector
 ```python
-# ./onlinehd/encoder.py line 100
-# I changed this method
-flip = int(self.dim / i)
-# to this to flip entire vector linearly
+# ./onlinehd/encoder.py line 101
+# I changed 'flipped D/(M−1) bits' method to this
 flip = int(self.dim / m) * i
+temp[:flip] = -1
+temp[flip:] = 1
 ```
 
 ### Test Result
